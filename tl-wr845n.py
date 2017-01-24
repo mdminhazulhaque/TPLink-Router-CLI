@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Written by
-# Md. Minhazul Haque, 2007, GPL, mdminhazulhaque@gmail.com
+# Md. Minhazul Haque, 2017, GPL, mdminhazulhaque@gmail.com
 
 import requests
 import re
