@@ -5,11 +5,23 @@
 
 import requests
 import re
+import sys
 
 from bs4 import BeautifulSoup
 from tabulate import tabulate
 
 group = lambda t, n: zip(*[t[i::n] for i in range(n)])
+
+def humansize(bytes):
+    nbytes = int(bytes) * 1024
+    suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+    if nbytes == 0: return '0 B'
+    i = 0
+    while nbytes >= 1024 and i < len(suffixes)-1:
+        nbytes /= 1024.
+        i += 1
+    f = ('%.2f' % nbytes).rstrip('0').rstrip('.')
+    return '%s %s' % (f, suffixes[i])
 
 class TL_WR845N:
     def __init__(self):
@@ -23,7 +35,12 @@ class TL_WR845N:
         """ get session token from router """
         r = requests.get('http://192.168.0.1/userRpm/LoginRpm.htm?Save=Save', headers=self.headers)
         match = re.search(r'http://192.168.0.1/(.*)/userRpm/Index.htm', r.text)
-        self.token = match.group(1)
+        
+        try:
+            self.token = match.group(1)
+        except:
+            print 'Token not found'
+            sys.exit(1)
 
     def get_dhcp_leases(self):
         """ get list of connected peers """
@@ -47,7 +64,7 @@ class TL_WR845N:
         data.pop()
         info = []
         for mac, _, received, sent, _ in group(data, 5):
-            info.append([mac, received, sent])
+            info.append([mac, humansize(received), humansize(sent)])
         return tabulate(info, headers=['mac', 'received', 'sent'])
         
 if __name__ == "__main__":
