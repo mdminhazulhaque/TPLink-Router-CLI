@@ -27,7 +27,7 @@ class TL_WR845N:
     def __init__(self):
         self.headers = {
             # TODO Generate basic authentication from username password using JS core_md5 and other functions
-            'Cookie': 'Authorization=Basic%20aG9nYTo2ZGFkYWFlMzUxM2U2YzJkMjg2MTAyNTU2YjQwMjI0NQ%3D%3D',
+            'Cookie': 'Authorization=Basic%20YWRtaW46MjEyMzJmMjk3YTU3YTVhNzQzODk0YTBlNGE4MDFmYzM%3D',
             'Referer': 'http://192.168.0.1/'
         }
         self.get_token()
