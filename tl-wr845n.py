@@ -27,36 +27,42 @@ class TL_WR845N:
     def __init__(self):
         self.headers = {
             # TODO Generate basic authentication from username password using JS core_md5 and other functions
-            'Cookie': 'Authorization=Basic%20YWRtaW46MjEyMzJmMjk3YTU3YTVhNzQzODk0YTBlNGE4MDFmYzM%3D',
+            'Cookie': 'Authorization=Basic%20aG9nYTo2ZGFkYWFlMzUxM2U2YzJkMjg2MTAyNTU2YjQwMjI0NQ%3D%3D',
             'Referer': 'http://192.168.0.1/'
         }
+        self.get_token()
         
     def get_token(self):
         """ get session token from router """
         r = requests.get('http://192.168.0.1/userRpm/LoginRpm.htm?Save=Save', headers=self.headers)
         match = re.search(r'http://192.168.0.1/(.*)/userRpm/Index.htm', r.text)
         
-        try:
-            self.token = match.group(1)
-        except:
-            print 'Token not found'
-            sys.exit(1)
+        for try_count in range(3):
+            try:
+                self.token = match.group(1)
+                return
+            except:
+                pass
+        
+        print 'Token not found'
+        sys.exit(1)
 
-    def get_dhcp_leases(self):
+    def client_mac(self):
         """ get list of connected peers """
         dhcp_url = 'http://192.168.0.1/' + self.token + '/userRpm/AssignedIpAddrListRpm.htm?Refresh=Refresh'
         response = requests.get(dhcp_url, headers=self.headers).text
         document = BeautifulSoup(response, 'html.parser')
         data = document.script.string.replace("var DHCPDynList = new Array(", "").replace(");", "").replace("\n", "").strip(' \t\n\r').split(", ")
         data.pop()
-        info = []
+        info = {}
         for hostname, mac, ip, lease in group(data, 4):
-            info.append([mac, ip, hostname, lease])
-
-        return tabulate(info, headers=['mac', 'ipaddr', 'hostname', 'lease'])
+            info[mac] = [hostname, ip]
+        return info
         
-    def get_wlan_status(self):
-        """ get list of wlan peers and packet statics """
+    def client_stat(self):
+        """ get list of wlan peers and packet statics """        
+        mac_map = self.client_mac()
+        
         wlan_status_url = 'http://192.168.0.1/' + self.token + '/userRpm/WlanStationRpm.htm?Page=1&vapIdx='
         response = requests.get(wlan_status_url, headers=self.headers).text
         document = BeautifulSoup(response, 'html.parser')
@@ -64,16 +70,15 @@ class TL_WR845N:
         data.pop()
         info = []
         for mac, _, received, sent, _ in group(data, 5):
-            info.append([mac, humansize(received), humansize(sent)])
-        return tabulate(info, headers=['mac', 'received', 'sent'])
+            name = mac_map[mac][0]
+            ip = mac_map[mac][1]
+            info.append([ip, mac, name, humansize(received), humansize(sent)])
+            
+        return info
         
 if __name__ == "__main__":
     router = TL_WR845N()
-    router.get_token()
-    print 'dhcp_leases'
-    print router.get_dhcp_leases()
-    print
-    print
-    print 'wlan_status'
-    print router.get_wlan_status()
+    stat = router.client_stat()    
+    print tabulate(stat, headers=['ip', 'mac', 'name', 'received', 'sent'])
+    
     
