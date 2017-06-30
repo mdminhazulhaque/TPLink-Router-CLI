@@ -8,7 +8,7 @@ Simple HTTP API for remote data polling or controlling TL-WR845N router (might w
 $ python tl-wr845n.py
 ip               mac                  name                        received    sent     
 ---------------  -------------------  --------------------------  ----------  ---------
-"192.168.0.108"  "36-01-55-D8-5D-E2"  "DESKTOP-2V44CC92"           5.9 GB      7.22 GB  
+"192.168.0.108"  "36-01-55-D8-5D-E2"  "DESKTOP-2V44CC92"          5.9 GB      7.22 GB  
 "192.168.0.103"  "52-7E-65-B4-2A-25"  "android-df9862b973a1b189"  197.33 MB   267.36 MB
 "192.168.0.101"  "44-15-6F-F0-99-BF"  "rakib38s-iPhone"           4.31 MB     1.95 MB  
 "192.168.0.106"  "74-F0-6D-31-D6-B0"  "mew-laptop"                62.92 MB    66.73 MB 
@@ -20,5 +20,6 @@ ip               mac                  name                        received    se
 
 - [ ] Add more functions to get status updates
 - [x] Map mac address with status updates
+- [x] Human readable up/down data statistics
 - [ ] Cleanup code
 - [ ] Create an webui (AngularJS perhaps!)
