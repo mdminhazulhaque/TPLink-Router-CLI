@@ -1,11 +1,11 @@
-# TL-WR845N-API
+# TPLink-Router-CLI
 
-Simple HTTP API for remote data polling or controlling TL-WR845N router (might work with other TPLink routers!)
+Simple CLI client for remote data polling or controlling TL-WR845N router (might work with other TPLink routers!)
 
 ## Sample Result
 
 ```
-$ python tl-wr845n.py
+$ python tplink-cli.py -h 192.168.100.1 -u admin -p qwer0987 -r
 ip               mac                  name                        received    sent     
 ---------------  -------------------  --------------------------  ----------  ---------
 "192.168.0.108"  "36-01-55-D8-5D-E2"  "DESKTOP-2V44CC92"          5.9 GB      7.22 GB  
@@ -21,5 +21,5 @@ ip               mac                  name                        received    se
 - [ ] Add more functions to get status updates
 - [x] Map mac address with status updates
 - [x] Human readable up/down data statistics
-- [ ] Cleanup code
+- [x] Cleanup code
 - [ ] Create an webui (AngularJS perhaps!)
