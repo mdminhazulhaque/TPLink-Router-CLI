@@ -5,7 +5,8 @@ Simple CLI client for remote data polling or controlling TL-WR845N router (might
 ## Sample Result
 
 ```
-$ python tplink-cli.py -h 192.168.100.1 -u admin -p qwer0987 -r
+# dhcp lease and rx/tx info
+$ python tplink-cli.py -h 192.168.100.1 -u admin -p qwer0987 -s -b
 ip               mac                  name                        received    sent     
 ---------------  -------------------  --------------------------  ----------  ---------
 "192.168.0.108"  "36-01-55-D8-5D-E2"  "DESKTOP-2V44CC92"          5.9 GB      7.22 GB  
@@ -14,6 +15,9 @@ ip               mac                  name                        received    se
 "192.168.0.106"  "74-F0-6D-31-D6-B0"  "mew-laptop"                62.92 MB    66.73 MB 
 "192.168.0.200"  "24-FD-5C-52-5E-02"  "Minhaz-PC"                 57.75 MB    73.16 MB 
 "192.168.0.201"  "ED-1B-82-24-38-A4"  "Minhaz-MI5"                1.57 MB     1.01 MB  
+
+# reboots the router
+$ python tplink-cli.py -h 192.168.100.1 -u admin -p qwer0987 -r
 ```
 
 ## TODO
@@ -22,4 +26,6 @@ ip               mac                  name                        received    se
 - [x] Map mac address with status updates
 - [x] Human readable up/down data statistics
 - [x] Cleanup code
-- [ ] Create an webui (AngularJS perhaps!)
+- [x] Reboot Feature
+- [ ] Enable/Disable Wireless Radio
+- [ ] Enable/Disable ACL

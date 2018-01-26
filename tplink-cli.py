@@ -18,6 +18,7 @@ class TPLinkRouter:
     URL_LOGIN = 'userRpm/LoginRpm.htm?Save=Save'
     URL_LOGOUT = '/userRpm/LogoutRpm.htm'
     URL_CLIENT_LIST = '/userRpm/AssignedIpAddrListRpm.htm?Refresh=Refresh'
+    URL_REBOOT = '/userRpm/SysRebootRpm.htm?Reboot=Reboot'
     URL_WLAN_STAT = '/userRpm/WlanStationRpm.htm?Page=1&vapIdx='
     
     @staticmethod
@@ -91,6 +92,14 @@ class TPLinkRouter:
         data = TPLinkRouter.replace_by(document.find_all('script')[1].string, "hostList")
         return data
     
+    def reboot(self):
+        reboot_url = self.address + self.token + self.URL_REBOOT
+        response = requests.get(reboot_url, headers=self.headers).text
+        if "Device Reboot Successfully" in response:
+            return 0
+        else:
+            return 1
+    
     def merge_client_stat(self, sort=False, human=True):
         mac_map = self.get_dhcp_clients()
         data = self.get_wlan_stat()
@@ -144,10 +153,16 @@ if __name__ == "__main__":
     parser.add_argument('-p', dest='pswd', action="store", default="admin", type=str)
     parser.add_argument('-s', dest='sort', action="store_true", default=False)
     parser.add_argument('-b', dest='bytes', action="store_true", default=False)
+    parser.add_argument('-r', dest='reboot', action="store_true", default=False)
 
     args = parser.parse_args()
     
     router = TPLinkRouter(address=args.host, username=args.user, password=args.pswd)
+    
+    if args.reboot:
+        ret = router.reboot()
+        exit(ret)
+    
     stat = router.merge_client_stat(human=args.bytes, sort=args.sort)
     stat = TPLinkRouter.macbind_clients("macbind.txt", stat)
     
